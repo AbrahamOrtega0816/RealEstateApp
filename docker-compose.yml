@@ -1,0 +1,72 @@
+version: "3.8"
+
+services:
+  # Backend API (.NET)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: realestate-backend
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080;https://+:8081
+      - ASPNETCORE_HTTPS_PORT=5001
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+    volumes:
+      - ./backend:/app
+      - /app/bin
+      - /app/obj
+    depends_on:
+      - mongodb
+    networks:
+      - realestate-network
+    restart: unless-stopped
+
+  # Frontend Next.js
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: realestate-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    networks:
+      - realestate-network
+    restart: unless-stopped
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: realestate-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD:-defaultpassword}
+      - MONGO_INITDB_DATABASE=RealEstateDB
+    volumes:
+      - mongodb_data:/data/db
+      - ./backend/mongodb-init:/docker-entrypoint-initdb.d
+    networks:
+      - realestate-network
+    restart: unless-stopped
+
+networks:
+  realestate-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local

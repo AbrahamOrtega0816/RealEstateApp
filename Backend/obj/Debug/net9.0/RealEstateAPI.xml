@@ -897,7 +897,7 @@
             <response code="400">If the property data is invalid</response>
             <response code="500">If there was an internal server error</response>
         </member>
-        <member name="M:RealEstateAPI.Features.Properties.Controllers.PropertiesController.UpdateProperty(System.String,RealEstateAPI.Features.Properties.DTOs.CreatePropertyDto)">
+        <member name="M:RealEstateAPI.Features.Properties.Controllers.PropertiesController.UpdateProperty(System.String,RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto)">
             <summary>
             Updates an existing property
             </summary>
@@ -956,9 +956,9 @@
             Property price
             </summary>
         </member>
-        <member name="P:RealEstateAPI.Features.Properties.DTOs.CreatePropertyDto.Image">
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.CreatePropertyDto.Images">
             <summary>
-            Property image URL
+            Property image files
             </summary>
         </member>
         <member name="P:RealEstateAPI.Features.Properties.DTOs.CreatePropertyDto.CodeInternal">
@@ -1001,9 +1001,9 @@
             Property price
             </summary>
         </member>
-        <member name="P:RealEstateAPI.Features.Properties.DTOs.PropertyDto.Image">
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.PropertyDto.Images">
             <summary>
-            Property image URL
+            Property image URLs
             </summary>
         </member>
         <member name="P:RealEstateAPI.Features.Properties.DTOs.PropertyDto.CodeInternal">
@@ -1076,6 +1076,46 @@
             Sort direction (asc, desc)
             </summary>
         </member>
+        <member name="T:RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto">
+            <summary>
+            DTO for updating existing properties
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto.IdOwner">
+            <summary>
+            Owner identifier
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto.Name">
+            <summary>
+            Property name
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto.Address">
+            <summary>
+            Property address
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto.Price">
+            <summary>
+            Property price
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto.Images">
+            <summary>
+            Property image files (optional for updates)
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto.CodeInternal">
+            <summary>
+            Internal property code
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto.Year">
+            <summary>
+            Property year of construction
+            </summary>
+        </member>
         <member name="T:RealEstateAPI.Features.Properties.Models.Property">
             <summary>
             Represents a real estate property in the MongoDB database
@@ -1106,9 +1146,9 @@
             Property price
             </summary>
         </member>
-        <member name="P:RealEstateAPI.Features.Properties.Models.Property.Image">
+        <member name="P:RealEstateAPI.Features.Properties.Models.Property.Images">
             <summary>
-            Property image URL
+            Property image URLs
             </summary>
         </member>
         <member name="P:RealEstateAPI.Features.Properties.Models.Property.CodeInternal">
@@ -1162,7 +1202,7 @@
             <param name="createPropertyDto">New property data</param>
             <returns>Created property</returns>
         </member>
-        <member name="M:RealEstateAPI.Features.Properties.Services.IPropertyService.UpdatePropertyAsync(System.String,RealEstateAPI.Features.Properties.DTOs.CreatePropertyDto)">
+        <member name="M:RealEstateAPI.Features.Properties.Services.IPropertyService.UpdatePropertyAsync(System.String,RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto)">
             <summary>
             Updates an existing property
             </summary>
@@ -1541,6 +1581,77 @@
             <summary>
             Indicates if there is a next page
             </summary>
+        </member>
+        <member name="T:RealEstateAPI.Features.Shared.Services.IImageService">
+            <summary>
+            Interface for image processing and management services
+            </summary>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.IImageService.ProcessImageFilesAsync(Microsoft.AspNetCore.Http.IFormFile[],System.String)">
+            <summary>
+            Processes uploaded image files and returns their URLs/paths
+            </summary>
+            <param name="imageFiles">Array of uploaded image files</param>
+            <param name="subFolder">Subfolder within uploads directory (e.g., "properties", "users")</param>
+            <returns>List of processed image URLs/paths</returns>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.IImageService.IsValidImageFile(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Validates if the uploaded file is a valid image
+            </summary>
+            <param name="file">File to validate</param>
+            <returns>True if valid image file</returns>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.IImageService.DeleteImageAsync(System.String)">
+            <summary>
+            Deletes an image file from the server
+            </summary>
+            <param name="imageUrl">URL or path of the image to delete</param>
+            <returns>True if successfully deleted</returns>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.IImageService.DeleteImagesAsync(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Deletes multiple image files from the server
+            </summary>
+            <param name="imageUrls">List of URLs or paths of images to delete</param>
+            <returns>Number of successfully deleted images</returns>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.IImageService.GetAllowedExtensions">
+            <summary>
+            Gets the allowed image file extensions
+            </summary>
+            <returns>Array of allowed extensions</returns>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.IImageService.GetAllowedContentTypes">
+            <summary>
+            Gets the allowed image content types
+            </summary>
+            <returns>Array of allowed content types</returns>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.IImageService.GetMaxFileSize">
+            <summary>
+            Gets the maximum file size allowed for images
+            </summary>
+            <returns>Maximum file size in bytes</returns>
+        </member>
+        <member name="T:RealEstateAPI.Features.Shared.Services.ImageService">
+            <summary>
+            Service for image processing and management
+            </summary>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.ImageService.GenerateUniqueFileName(System.String)">
+            <summary>
+            Generates a unique filename to prevent conflicts
+            </summary>
+            <param name="originalFileName">Original file name</param>
+            <returns>Unique file name</returns>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.ImageService.GetPhysicalPath(System.String)">
+            <summary>
+            Converts a relative URL to physical file path
+            </summary>
+            <param name="imageUrl">Relative image URL</param>
+            <returns>Physical file path</returns>
         </member>
         <member name="T:RealEstateAPI.Features.Shared.Services.IMongoDbStartupService">
             <summary>

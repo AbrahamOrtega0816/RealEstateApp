@@ -211,3 +211,4 @@
 /Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/Backend/obj/Debug/net9.0/RealEstateAPI.pdb
 /Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/Backend/obj/Debug/net9.0/RealEstateAPI.genruntimeconfig.cache
 /Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/Backend/obj/Debug/net9.0/ref/RealEstateAPI.dll
+/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/backend/bin/Debug/net9.0/RealEstateAPI.staticwebassets.runtime.json

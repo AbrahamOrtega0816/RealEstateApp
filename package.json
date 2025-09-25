@@ -1,0 +1,37 @@
+{
+  "name": "real-estate-app",
+  "version": "1.0.0",
+  "description": "Aplicación completa de bienes raíces con backend .NET y frontend Next.js",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --bun concurrently \"bun run dev:backend\" \"bun run dev:frontend\"",
+    "dev:backend": "cd backend && dotnet run",
+    "dev:frontend": "cd frontend && bun run dev",
+    "build": "bun run build:backend && bun run build:frontend",
+    "build:backend": "cd backend && dotnet build",
+    "build:frontend": "cd frontend && bun run build",
+    "start": "bun run --bun concurrently \"bun run start:backend\" \"bun run start:frontend\"",
+    "start:backend": "cd backend && dotnet run --configuration Release",
+    "start:frontend": "cd frontend && bun run start",
+    "install:all": "bun run install:frontend",
+    "install:frontend": "cd frontend && bun install",
+    "clean": "bun run clean:backend && bun run clean:frontend",
+    "clean:backend": "cd backend && dotnet clean",
+    "clean:frontend": "cd frontend && rm -rf .next node_modules && bun install",
+    "test": "bun run test:backend",
+    "test:backend": "cd backend && dotnet test",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "author": "Real Estate Development Team",
+  "license": "MIT"
+}

@@ -89,6 +89,7 @@ builder.Services.AddScoped<IPropertyTraceService, PropertyTraceService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IMongoDbStartupService, MongoDbStartupService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // Add controllers
 builder.Services.AddControllers();
