@@ -1,15 +1,24 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Deshabilitar source maps para evitar problemas con Bun
+  // Deshabilitar todos los source maps
   productionBrowserSourceMaps: false,
 
-  // Configuración de webpack para deshabilitar source maps
+  // Configuración experimental para deshabilitar source maps
+  experimental: {
+    serverSourceMaps: false,
+  },
+
+  // Configuración de webpack para deshabilitar source maps completamente
   webpack: (config, { dev, isServer }) => {
-    if (dev) {
-      // Deshabilitar source maps en desarrollo para evitar el error
-      config.devtool = false;
+    // Deshabilitar source maps en todos los entornos
+    config.devtool = false;
+
+    // Asegurar que no se generen source maps
+    if (config.optimization) {
+      config.optimization.minimize = dev ? false : config.optimization.minimize;
     }
+
     return config;
   },
 };

@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:turbo": "next dev --turbopack",
+    "dev:bun": "bun run dev",
+    "dev:node": "node_modules/.bin/next dev",
     "build": "next build",
-    "build:turbo": "next build --turbopack",
     "start": "next start"
   },
   "dependencies": {
