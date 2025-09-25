@@ -60,9 +60,34 @@ body {
 }
 
 [data-theme="light"] .input::placeholder {
-  color: #9CA3AF !important;
+  color: #9ca3af !important;
 }
 
 [data-theme="light"] .input {
   color: #374151 !important;
+}
+
+/* Toast styles for different themes */
+:root {
+  --toast-bg: hsl(var(--b1));
+  --toast-color: hsl(var(--bc));
+  --toast-border: hsl(var(--b3));
+}
+
+[data-theme="light"] {
+  --toast-bg: #ffffff;
+  --toast-color: #374151;
+  --toast-border: #e5e7eb;
+}
+
+[data-theme="dark"] {
+  --toast-bg: #1f2937;
+  --toast-color: #f9fafb;
+  --toast-border: #374151;
+}
+
+[data-theme="luxury"] {
+  --toast-bg: #2a2e37;
+  --toast-color: #dca54c;
+  --toast-border: #513448;
 }

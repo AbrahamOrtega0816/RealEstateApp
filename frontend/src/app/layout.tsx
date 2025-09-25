@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/providers/QueryProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import { ToastProvider } from "@/providers/ToastProvider";
 import { ThemeSelector } from "@/components";
 
 const geistSans = Geist({
@@ -31,11 +32,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased theme-transition`}
       >
         <ThemeProvider>
-          {/* Global theme toggle fixed at top-right with glass effect */}
-          <div className="fixed right-4 top-4 z-50">
-            <ThemeSelector className="shadow-xl" />
-          </div>
-          <QueryProvider>{children}</QueryProvider>
+          <ToastProvider>
+            {/* Global theme toggle fixed at top-right with glass effect */}
+            <div className="fixed right-4 top-4 z-50">
+              <ThemeSelector className="shadow-xl" />
+            </div>
+            <QueryProvider>{children}</QueryProvider>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

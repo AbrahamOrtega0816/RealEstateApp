@@ -1,38 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 import LoginLayout from "../layout";
 import { LoginCard, LoginForm } from "../components";
-
-interface LoginData {
-  email: string;
-  password: string;
-}
+import { useAuth } from "../hooks/useAuth";
+import { LoginDto } from "../types/auth";
 
 const LoginPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { login, isLoginLoading, loginError, isAuthenticated } = useAuth();
 
-  const handleLogin = async (data: LoginData) => {
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/"); // or your main application route
+    }
+  }, [isAuthenticated, router]);
+
+  const handleLogin = async (data: LoginDto) => {
     try {
-      setIsLoading(true);
-
-      // Here will go the authentication logic
-      console.log("Login data:", data);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Here you can add the logic for:
-      // - Call authentication API
-      // - Save token
-      // - Redirect user
-
-      alert("Login successful! (this is just for demonstration)");
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Error signing in");
-    } finally {
-      setIsLoading(false);
+      await toast.promise(login(data), {
+        loading: "Logging in...",
+        success: "Login successful",
+      });
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Login failed";
+      toast.error(errorMessage);
     }
   };
 
@@ -42,7 +38,7 @@ const LoginPage: React.FC = () => {
         title="Welcome back"
         subtitle="Enter your credentials to access your account"
       >
-        <LoginForm onSubmit={handleLogin} isLoading={isLoading} />
+        <LoginForm onSubmit={handleLogin} isLoading={isLoginLoading} />
       </LoginCard>
     </LoginLayout>
   );

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // Configuración base de la API
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5260/api";
 
 // Función helper para realizar peticiones HTTP
 const fetchApi = async (endpoint: string, options?: RequestInit) => {
@@ -18,9 +18,19 @@ const fetchApi = async (endpoint: string, options?: RequestInit) => {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.message || `Error ${response.status}: ${response.statusText}`
-    );
+
+    // Asegurar que siempre tengamos un mensaje de error válido
+    let errorMessage: string;
+
+    if (errorData && typeof errorData.message === "string") {
+      errorMessage = errorData.message;
+    } else if (errorData && typeof errorData === "string") {
+      errorMessage = errorData;
+    } else {
+      errorMessage = `Error ${response.status}: ${response.statusText}`;
+    }
+
+    throw new Error(errorMessage);
   }
 
   return response.json();
