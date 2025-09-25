@@ -230,9 +230,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Configurar archivos estáticos
-app.UseStaticFiles();
-
 // Usar CORS
 app.UseCors("AllowFrontend");
 

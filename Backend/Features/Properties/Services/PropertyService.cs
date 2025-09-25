@@ -5,6 +5,7 @@ using RealEstateAPI.Configuration;
 using RealEstateAPI.Features.Properties.Models;
 using RealEstateAPI.Features.Properties.DTOs;
 using RealEstateAPI.Features.Shared.DTOs;
+using RealEstateAPI.Features.Shared.Services;
 
 namespace RealEstateAPI.Features.Properties.Services;
 
@@ -15,12 +16,15 @@ public class PropertyService : IPropertyService
 {
     private readonly IMongoCollection<Property> _propertiesCollection;
     private readonly ILogger<PropertyService> _logger;
+    private readonly IImageService _imageService;
 
     public PropertyService(
         IOptions<MongoDbSettings> mongoDbSettings,
-        ILogger<PropertyService> logger)
+        ILogger<PropertyService> logger,
+        IImageService imageService)
     {
         _logger = logger;
+        _imageService = imageService;
         
         var mongoClient = new MongoClient(mongoDbSettings.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(mongoDbSettings.Value.DatabaseName);
@@ -149,7 +153,7 @@ public class PropertyService : IPropertyService
                 Name = createPropertyDto.Name,
                 Address = createPropertyDto.Address,
                 Price = createPropertyDto.Price,
-                Images = await ProcessImageFilesAsync(createPropertyDto.Images),
+                Images = await _imageService.ProcessImageFilesAsync(createPropertyDto.Images, "properties"),
                 CodeInternal = createPropertyDto.CodeInternal,
                 Year = createPropertyDto.Year,
                 CreatedAt = DateTime.UtcNow,
@@ -183,7 +187,7 @@ public class PropertyService : IPropertyService
                 .Set(x => x.Name, updatePropertyDto.Name)
                 .Set(x => x.Address, updatePropertyDto.Address)
                 .Set(x => x.Price, updatePropertyDto.Price)
-                .Set(x => x.Images, await ProcessImageFilesAsync(updatePropertyDto.Images))
+                .Set(x => x.Images, await _imageService.ProcessImageFilesAsync(updatePropertyDto.Images, "properties"))
                 .Set(x => x.CodeInternal, updatePropertyDto.CodeInternal)
                 .Set(x => x.Year, updatePropertyDto.Year)
                 .Set(x => x.UpdatedAt, DateTime.UtcNow);
@@ -300,75 +304,6 @@ public class PropertyService : IPropertyService
         };
     }
 
-    /// <summary>
-    /// Processes uploaded image files and returns their URLs/paths
-    /// </summary>
-    /// <param name="imageFiles">Array of uploaded image files</param>
-    /// <returns>List of processed image URLs/paths</returns>
-    private async Task<List<string>> ProcessImageFilesAsync(IFormFile[]? imageFiles)
-    {
-        var imageUrls = new List<string>();
-        
-        if (imageFiles == null || imageFiles.Length == 0)
-        {
-            return imageUrls;
-        }
-
-        try
-        {
-            // Create uploads directory if it doesn't exist
-            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "properties");
-            Directory.CreateDirectory(uploadsPath);
-
-            foreach (var file in imageFiles)
-            {
-                if (file.Length > 0 && IsValidImageFile(file))
-                {
-                    // Generate unique filename
-                    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-                    var filePath = Path.Combine(uploadsPath, fileName);
-
-                    // Save file
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-
-                    // Add relative URL to list
-                    imageUrls.Add($"/uploads/properties/{fileName}");
-                    
-                    _logger.LogInformation("Image saved: {FileName}", fileName);
-                }
-                else
-                {
-                    _logger.LogWarning("Invalid image file rejected: {FileName}", file.FileName);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error processing image files");
-            throw;
-        }
-
-        return imageUrls;
-    }
-
-    /// <summary>
-    /// Validates if the uploaded file is a valid image
-    /// </summary>
-    /// <param name="file">File to validate</param>
-    /// <returns>True if valid image file</returns>
-    private static bool IsValidImageFile(IFormFile file)
-    {
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
-        var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/gif", "image/webp" };
-        
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        var contentType = file.ContentType.ToLowerInvariant();
-        
-        return allowedExtensions.Contains(extension) && allowedContentTypes.Contains(contentType);
-    }
 
     /// <summary>
     /// Maps a Property entity to PropertyDto
