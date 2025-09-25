@@ -41,10 +41,10 @@ public class Property
     public decimal Price { get; set; }
 
     /// <summary>
-    /// Property image URL
+    /// Property image URLs
     /// </summary>
-    [BsonElement("image")]
-    public string Image { get; set; } = string.Empty;
+    [BsonElement("images")]
+    public List<string> Images { get; set; } = new();
 
     /// <summary>
     /// Internal property code

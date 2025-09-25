@@ -149,7 +149,7 @@ public class PropertyService : IPropertyService
                 Name = createPropertyDto.Name,
                 Address = createPropertyDto.Address,
                 Price = createPropertyDto.Price,
-                Image = createPropertyDto.Image,
+                Images = await ProcessImageFilesAsync(createPropertyDto.Images),
                 CodeInternal = createPropertyDto.CodeInternal,
                 Year = createPropertyDto.Year,
                 CreatedAt = DateTime.UtcNow,
@@ -170,7 +170,7 @@ public class PropertyService : IPropertyService
         }
     }
 
-    public async Task<PropertyDto?> UpdatePropertyAsync(string id, CreatePropertyDto updatePropertyDto)
+    public async Task<PropertyDto?> UpdatePropertyAsync(string id, UpdatePropertyDto updatePropertyDto)
     {
         try
         {
@@ -183,7 +183,7 @@ public class PropertyService : IPropertyService
                 .Set(x => x.Name, updatePropertyDto.Name)
                 .Set(x => x.Address, updatePropertyDto.Address)
                 .Set(x => x.Price, updatePropertyDto.Price)
-                .Set(x => x.Image, updatePropertyDto.Image)
+                .Set(x => x.Images, await ProcessImageFilesAsync(updatePropertyDto.Images))
                 .Set(x => x.CodeInternal, updatePropertyDto.CodeInternal)
                 .Set(x => x.Year, updatePropertyDto.Year)
                 .Set(x => x.UpdatedAt, DateTime.UtcNow);
@@ -301,6 +301,76 @@ public class PropertyService : IPropertyService
     }
 
     /// <summary>
+    /// Processes uploaded image files and returns their URLs/paths
+    /// </summary>
+    /// <param name="imageFiles">Array of uploaded image files</param>
+    /// <returns>List of processed image URLs/paths</returns>
+    private async Task<List<string>> ProcessImageFilesAsync(IFormFile[]? imageFiles)
+    {
+        var imageUrls = new List<string>();
+        
+        if (imageFiles == null || imageFiles.Length == 0)
+        {
+            return imageUrls;
+        }
+
+        try
+        {
+            // Create uploads directory if it doesn't exist
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "properties");
+            Directory.CreateDirectory(uploadsPath);
+
+            foreach (var file in imageFiles)
+            {
+                if (file.Length > 0 && IsValidImageFile(file))
+                {
+                    // Generate unique filename
+                    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+                    var filePath = Path.Combine(uploadsPath, fileName);
+
+                    // Save file
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    // Add relative URL to list
+                    imageUrls.Add($"/uploads/properties/{fileName}");
+                    
+                    _logger.LogInformation("Image saved: {FileName}", fileName);
+                }
+                else
+                {
+                    _logger.LogWarning("Invalid image file rejected: {FileName}", file.FileName);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing image files");
+            throw;
+        }
+
+        return imageUrls;
+    }
+
+    /// <summary>
+    /// Validates if the uploaded file is a valid image
+    /// </summary>
+    /// <param name="file">File to validate</param>
+    /// <returns>True if valid image file</returns>
+    private static bool IsValidImageFile(IFormFile file)
+    {
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/gif", "image/webp" };
+        
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var contentType = file.ContentType.ToLowerInvariant();
+        
+        return allowedExtensions.Contains(extension) && allowedContentTypes.Contains(contentType);
+    }
+
+    /// <summary>
     /// Maps a Property entity to PropertyDto
     /// </summary>
     private static PropertyDto MapToDto(Property property)
@@ -312,7 +382,7 @@ public class PropertyService : IPropertyService
             Name = property.Name,
             Address = property.Address,
             Price = property.Price,
-            Image = property.Image,
+            Images = property.Images,
             CodeInternal = property.CodeInternal,
             Year = property.Year,
             CreatedAt = property.CreatedAt,

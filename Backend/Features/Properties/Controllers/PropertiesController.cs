@@ -99,7 +99,7 @@ public class PropertiesController : ControllerBase
     [ProducesResponseType(typeof(PropertyDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<PropertyDto>> CreateProperty([FromBody] CreatePropertyDto createPropertyDto)
+    public async Task<ActionResult<PropertyDto>> CreateProperty([FromForm] CreatePropertyDto createPropertyDto)
     {
         try
         {
@@ -138,7 +138,7 @@ public class PropertiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<PropertyDto>> UpdateProperty(string id, [FromBody] CreatePropertyDto updatePropertyDto)
+    public async Task<ActionResult<PropertyDto>> UpdateProperty(string id, [FromForm] UpdatePropertyDto updatePropertyDto)
     {
         try
         {

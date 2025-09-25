@@ -35,7 +35,7 @@ public interface IPropertyService
     /// <param name="id">Property ID</param>
     /// <param name="updatePropertyDto">Updated data</param>
     /// <returns>Updated property or null if not exists</returns>
-    Task<PropertyDto?> UpdatePropertyAsync(string id, CreatePropertyDto updatePropertyDto);
+    Task<PropertyDto?> UpdatePropertyAsync(string id, UpdatePropertyDto updatePropertyDto);
 
     /// <summary>
     /// Deletes a property (soft delete)

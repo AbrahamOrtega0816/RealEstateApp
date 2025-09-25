@@ -3,18 +3,14 @@ using System.ComponentModel.DataAnnotations;
 namespace RealEstateAPI.Features.Properties.DTOs;
 
 /// <summary>
-/// DTO for transferring property information
+/// DTO for updating existing properties
 /// </summary>
-public class PropertyDto
+public class UpdatePropertyDto
 {
-    /// <summary>
-    /// Unique property identifier
-    /// </summary>
-    public string Id { get; set; } = string.Empty;
-
     /// <summary>
     /// Owner identifier
     /// </summary>
+    [Required(ErrorMessage = "Owner ID is required")]
     public string IdOwner { get; set; } = string.Empty;
 
     /// <summary>
@@ -39,32 +35,19 @@ public class PropertyDto
     public decimal Price { get; set; }
 
     /// <summary>
-    /// Property image URLs
+    /// Property image files (optional for updates)
     /// </summary>
-    public List<string> Images { get; set; } = new();
+    public IFormFile[]? Images { get; set; }
 
     /// <summary>
     /// Internal property code
     /// </summary>
+    [StringLength(50, ErrorMessage = "Code internal cannot exceed 50 characters")]
     public string CodeInternal { get; set; } = string.Empty;
 
     /// <summary>
     /// Property year of construction
     /// </summary>
+    [Range(1800, 2100, ErrorMessage = "Year must be between 1800 and 2100")]
     public int Year { get; set; }
-
-    /// <summary>
-    /// Creation date
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
-
-    /// <summary>
-    /// Update date
-    /// </summary>
-    public DateTime UpdatedAt { get; set; }
-
-    /// <summary>
-    /// Property status
-    /// </summary>
-    public bool IsActive { get; set; } = true;
 }

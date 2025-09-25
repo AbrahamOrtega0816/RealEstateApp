@@ -35,10 +35,9 @@ public class CreatePropertyDto
     public decimal Price { get; set; }
 
     /// <summary>
-    /// Property image URL
+    /// Property image files
     /// </summary>
-    [Url(ErrorMessage = "Image must be a valid URL")]
-    public string Image { get; set; } = string.Empty;
+    public IFormFile[]? Images { get; set; }
 
     /// <summary>
     /// Internal property code

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/Backend/RealEstateAPI.csproj": {}
+    "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/backend/RealEstateAPI.csproj": {}
   },
   "projects": {
-    "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/Backend/RealEstateAPI.csproj": {
+    "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/backend/RealEstateAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/Backend/RealEstateAPI.csproj",
+        "projectUniqueName": "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/backend/RealEstateAPI.csproj",
         "projectName": "RealEstateAPI",
-        "projectPath": "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/Backend/RealEstateAPI.csproj",
+        "projectPath": "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/backend/RealEstateAPI.csproj",
         "packagesPath": "/Users/abrahamortega/.nuget/packages/",
-        "outputPath": "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/Backend/obj/",
+        "outputPath": "/Users/abrahamortega/Desktop/TECHNICAL TEST/RealEstateApp/backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/abrahamortega/.nuget/NuGet/NuGet.Config"
