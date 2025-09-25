@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* DaisyUI configuration with themes */
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, luxury;
+}
+
+/* Custom CSS variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -19,8 +25,44 @@
   }
 }
 
+/* Base styles */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 250ms ease, color 250ms ease;
+}
+
+/* Custom utility classes for themes */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* Ensure labels and placeholders are visible in all themes */
+.label-text {
+  color: hsl(var(--bc)) !important;
+  opacity: 0.9 !important;
+}
+
+.input::placeholder {
+  color: hsl(var(--bc)) !important;
+  opacity: 0.5 !important;
+}
+
+.input {
+  color: hsl(var(--bc)) !important;
+}
+
+/* Fix for light theme specifically */
+[data-theme="light"] .label-text {
+  color: #374151 !important;
+}
+
+[data-theme="light"] .input::placeholder {
+  color: #9CA3AF !important;
+}
+
+[data-theme="light"] .input {
+  color: #374151 !important;
 }
