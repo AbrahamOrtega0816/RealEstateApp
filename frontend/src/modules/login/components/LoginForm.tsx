@@ -17,6 +17,7 @@ const loginSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters long"),
+  rememberMe: z.boolean().optional(),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -62,8 +63,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <div className="form-control">
           <label className="label cursor-pointer">
             <input
+              {...register("rememberMe")}
               id="remember-me"
-              name="remember-me"
               type="checkbox"
               className="checkbox checkbox-primary"
             />

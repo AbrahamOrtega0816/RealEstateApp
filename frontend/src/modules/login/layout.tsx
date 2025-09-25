@@ -35,11 +35,6 @@ const LoginLayout: React.FC<LoginLayoutProps> = ({ children }) => {
         ></div>
       </div>
 
-      {/* Theme Selector */}
-      <div className="absolute top-4 right-4 z-30">
-        <ThemeSelector />
-      </div>
-
       {/* Main Content */}
       <main className="relative z-20 flex items-center justify-center px-4 py-12 min-h-[calc(100vh-200px)]">
         <div className="w-full max-w-md">
