@@ -77,7 +77,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               </span>
             </label>
             <select
-              className="select select-bordered w-full focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+              className="select select-bordered w-full text-base-content focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
               value={filters.selectedOwner}
               onChange={(e) => updateSelectedOwner(e.target.value)}
             >
@@ -154,7 +154,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </div>
 
           {/* Active Checkbox */}
-          <div className="form-control">
+          {/* <div className="form-control">
             <label className="label">
               <span className="label-text text-sm font-medium text-base-content">
                 Active Only
@@ -168,7 +168,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
                 onChange={(e) => updateIsActive(e.target.checked)}
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Clear Button */}
           <div className="flex items-end">
