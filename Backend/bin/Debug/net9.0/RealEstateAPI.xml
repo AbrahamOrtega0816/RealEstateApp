@@ -859,11 +859,6 @@
             Maps an Owner entity to OwnerDto
             </summary>
         </member>
-        <member name="M:RealEstateAPI.Features.Owners.Services.OwnerService.GetFullImageUrl(System.String)">
-            <summary>
-            Converts a relative image path to a full URL
-            </summary>
-        </member>
         <member name="T:RealEstateAPI.Features.Properties.Controllers.PropertiesController">
             <summary>
             Controller for managing properties
@@ -1070,12 +1065,27 @@
         </member>
         <member name="P:RealEstateAPI.Features.Properties.DTOs.PropertyFilterDto.SortBy">
             <summary>
-            Field to sort by (name, address, price, createdAt)
+            Field to sort by (name, address, price, year, createdAt)
             </summary>
         </member>
         <member name="P:RealEstateAPI.Features.Properties.DTOs.PropertyFilterDto.SortDirection">
             <summary>
             Sort direction (asc, desc)
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.PropertyFilterDto.IdOwner">
+            <summary>
+            Filter by owner ID
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.PropertyFilterDto.Year">
+            <summary>
+            Filter by construction year
+            </summary>
+        </member>
+        <member name="P:RealEstateAPI.Features.Properties.DTOs.PropertyFilterDto.IsActive">
+            <summary>
+            Filter by active status (default true)
             </summary>
         </member>
         <member name="T:RealEstateAPI.Features.Properties.DTOs.UpdatePropertyDto">
@@ -1678,6 +1688,25 @@
             </summary>
             <returns>True if accessible, false otherwise</returns>
         </member>
+        <member name="T:RealEstateAPI.Features.Shared.Services.IUrlService">
+            <summary>
+            Service interface for URL generation and manipulation
+            </summary>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.IUrlService.GetFullUrl(System.String)">
+            <summary>
+            Converts a relative path to a full URL using the current request context
+            </summary>
+            <param name="relativePath">The relative path to convert</param>
+            <returns>The full URL</returns>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.IUrlService.GetFullUrls(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Converts a collection of relative paths to full URLs
+            </summary>
+            <param name="relativePaths">The relative paths to convert</param>
+            <returns>The full URLs</returns>
+        </member>
         <member name="T:RealEstateAPI.Features.Shared.Services.MongoDbStartupService">
             <summary>
             Service for MongoDB startup verification and health checks
@@ -1697,6 +1726,25 @@
             <summary>
             Checks if MongoDB is accessible
             </summary>
+        </member>
+        <member name="T:RealEstateAPI.Features.Shared.Services.UrlService">
+            <summary>
+            Service for URL generation and manipulation
+            </summary>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.UrlService.GetFullUrl(System.String)">
+            <summary>
+            Converts a relative path to a full URL using the current request context
+            </summary>
+            <param name="relativePath">The relative path to convert</param>
+            <returns>The full URL</returns>
+        </member>
+        <member name="M:RealEstateAPI.Features.Shared.Services.UrlService.GetFullUrls(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Converts a collection of relative paths to full URLs
+            </summary>
+            <param name="relativePaths">The relative paths to convert</param>
+            <returns>The full URLs</returns>
         </member>
     </members>
 </doc>

@@ -17,14 +17,17 @@ public class PropertyService : IPropertyService
     private readonly IMongoCollection<Property> _propertiesCollection;
     private readonly ILogger<PropertyService> _logger;
     private readonly IImageService _imageService;
+    private readonly IUrlService _urlService;
 
     public PropertyService(
         IOptions<MongoDbSettings> mongoDbSettings,
         ILogger<PropertyService> logger,
-        IImageService imageService)
+        IImageService imageService,
+        IUrlService urlService)
     {
         _logger = logger;
         _imageService = imageService;
+        _urlService = urlService;
         
         var mongoClient = new MongoClient(mongoDbSettings.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(mongoDbSettings.Value.DatabaseName);
@@ -44,7 +47,10 @@ public class PropertyService : IPropertyService
             var indexKeysDefinition = Builders<Property>.IndexKeys
                 .Ascending(x => x.Name)
                 .Ascending(x => x.Address)
-                .Ascending(x => x.Price);
+                .Ascending(x => x.Price)
+                .Ascending(x => x.IdOwner)
+                .Ascending(x => x.Year)
+                .Ascending(x => x.IsActive);
             
             var indexOptions = new CreateIndexOptions { Background = true };
             _propertiesCollection.Indexes.CreateOne(new CreateIndexModel<Property>(indexKeysDefinition, indexOptions));
@@ -61,10 +67,12 @@ public class PropertyService : IPropertyService
     {
         try
         {
+            _logger.LogInformation("Filtering properties with IdOwner: {IdOwner}", filter.IdOwner);
+            
             var filterBuilder = Builders<Property>.Filter;
             var filters = new List<FilterDefinition<Property>>
             {
-                filterBuilder.Eq(x => x.IsActive, true)
+                filterBuilder.Eq(x => x.IsActive, filter.IsActive)
             };
 
             // Aplicar filtros
@@ -86,6 +94,16 @@ public class PropertyService : IPropertyService
             if (filter.MaxPrice.HasValue)
             {
                 filters.Add(filterBuilder.Lte(x => x.Price, filter.MaxPrice.Value));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.IdOwner))
+            {
+                filters.Add(filterBuilder.Eq(x => x.IdOwner, filter.IdOwner));
+            }
+
+            if (filter.Year.HasValue)
+            {
+                filters.Add(filterBuilder.Eq(x => x.Year, filter.Year.Value));
             }
 
             var combinedFilter = filterBuilder.And(filters);
@@ -299,6 +317,7 @@ public class PropertyService : IPropertyService
             "name" => isAscending ? sortBuilder.Ascending(x => x.Name) : sortBuilder.Descending(x => x.Name),
             "address" => isAscending ? sortBuilder.Ascending(x => x.Address) : sortBuilder.Descending(x => x.Address),
             "price" => isAscending ? sortBuilder.Ascending(x => x.Price) : sortBuilder.Descending(x => x.Price),
+            "year" => isAscending ? sortBuilder.Ascending(x => x.Year) : sortBuilder.Descending(x => x.Year),
             "createdat" => isAscending ? sortBuilder.Ascending(x => x.CreatedAt) : sortBuilder.Descending(x => x.CreatedAt),
             _ => sortBuilder.Descending(x => x.CreatedAt)
         };
@@ -308,7 +327,7 @@ public class PropertyService : IPropertyService
     /// <summary>
     /// Maps a Property entity to PropertyDto
     /// </summary>
-    private static PropertyDto MapToDto(Property property)
+    private PropertyDto MapToDto(Property property)
     {
         return new PropertyDto
         {
@@ -317,7 +336,7 @@ public class PropertyService : IPropertyService
             Name = property.Name,
             Address = property.Address,
             Price = property.Price,
-            Images = property.Images,
+            Images = _urlService.GetFullUrls(property.Images),
             CodeInternal = property.CodeInternal,
             Year = property.Year,
             CreatedAt = property.CreatedAt,

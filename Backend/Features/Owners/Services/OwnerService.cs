@@ -17,17 +17,17 @@ public class OwnerService : IOwnerService
     private readonly IMongoCollection<Owner> _ownersCollection;
     private readonly ILogger<OwnerService> _logger;
     private readonly IImageService _imageService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUrlService _urlService;
 
     public OwnerService(
         IOptions<MongoDbSettings> mongoDbSettings,
         ILogger<OwnerService> logger,
         IImageService imageService,
-        IHttpContextAccessor httpContextAccessor)
+        IUrlService urlService)
     {
         _logger = logger;
         _imageService = imageService;
-        _httpContextAccessor = httpContextAccessor;
+        _urlService = urlService;
         
         var mongoClient = new MongoClient(mongoDbSettings.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(mongoDbSettings.Value.DatabaseName);
@@ -243,58 +243,11 @@ public class OwnerService : IOwnerService
             Id = owner.Id ?? string.Empty,
             Name = owner.Name,
             Address = owner.Address,
-            Photo = GetFullImageUrl(owner.Photo),
+            Photo = _urlService.GetFullUrl(owner.Photo),
             Birthday = owner.Birthday,
             CreatedAt = owner.CreatedAt,
             UpdatedAt = owner.UpdatedAt,
             IsActive = owner.IsActive
         };
-    }
-
-    /// <summary>
-    /// Converts a relative image path to a full URL
-    /// </summary>
-    private string GetFullImageUrl(string relativePath)
-    {
-        if (string.IsNullOrEmpty(relativePath))
-        {
-            _logger.LogDebug("GetFullImageUrl: relativePath is null or empty");
-            return string.Empty;
-        }
-
-        // If it's already a full URL, return as is
-        if (relativePath.StartsWith("http://") || relativePath.StartsWith("https://"))
-        {
-            _logger.LogDebug("GetFullImageUrl: relativePath is already a full URL: {RelativePath}", relativePath);
-            return relativePath;
-        }
-
-        try
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext?.Request != null)
-            {
-                var request = httpContext.Request;
-                var baseUrl = $"{request.Scheme}://{request.Host}";
-                var fullUrl = $"{baseUrl}{relativePath}";
-                _logger.LogDebug("GetFullImageUrl: Generated full URL: {FullUrl} from base: {BaseUrl} and path: {RelativePath}", 
-                    fullUrl, baseUrl, relativePath);
-                return fullUrl;
-            }
-            else
-            {
-                _logger.LogWarning("GetFullImageUrl: HttpContext or Request is null");
-                // Fallback to localhost for development
-                var fallbackUrl = $"http://localhost:5000{relativePath}";
-                _logger.LogDebug("GetFullImageUrl: Using fallback URL: {FallbackUrl}", fallbackUrl);
-                return fallbackUrl;
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Error generating full URL for image: {RelativePath}", relativePath);
-            // Return relative path as fallback
-            return relativePath;
-        }
     }
 }

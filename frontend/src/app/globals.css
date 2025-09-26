@@ -91,3 +91,94 @@ body {
   --toast-color: #dca54c;
   --toast-border: #513448;
 }
+
+/* Button improvements for better visibility across themes */
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-outline {
+  border-width: 1px;
+}
+
+/* Light theme button improvements */
+[data-theme="light"] .btn-outline {
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+[data-theme="light"] .btn-outline:hover {
+  border-color: #6366f1;
+  background-color: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+[data-theme="light"] .btn-primary {
+  background-color: #6366f1;
+  border-color: #6366f1;
+  color: #ffffff;
+}
+
+[data-theme="light"] .btn-primary:hover {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+}
+
+/* Dark theme button improvements */
+[data-theme="dark"] .btn-outline {
+  border-color: #4b5563;
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .btn-outline:hover {
+  border-color: #6366f1;
+  background-color: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+/* Luxury theme button improvements */
+[data-theme="luxury"] .btn-outline {
+  border-color: #513448;
+  color: #dca54c;
+}
+
+[data-theme="luxury"] .btn-outline:hover {
+  border-color: #dca54c;
+  background-color: rgba(220, 165, 76, 0.1);
+}
+
+/* Search input icon visibility fixes */
+.input-bordered:focus + .absolute {
+  opacity: 1 !important;
+}
+
+/* Ensure search icon is always visible across themes */
+[data-theme="light"] .input-bordered + .absolute {
+  color: #6b7280 !important;
+  opacity: 0.8 !important;
+}
+
+[data-theme="light"] .input-bordered:focus + .absolute {
+  color: #6366f1 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .input-bordered + .absolute {
+  color: #9ca3af !important;
+  opacity: 0.8 !important;
+}
+
+[data-theme="dark"] .input-bordered:focus + .absolute {
+  color: #6366f1 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="luxury"] .input-bordered + .absolute {
+  color: #dca54c !important;
+  opacity: 0.8 !important;
+}
+
+[data-theme="luxury"] .input-bordered:focus + .absolute {
+  color: #dca54c !important;
+  opacity: 1 !important;
+}

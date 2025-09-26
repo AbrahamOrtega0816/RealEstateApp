@@ -94,17 +94,20 @@ const Sidebar: React.FC<SidebarProps> = ({
     <>
       {/* Overlay para móvil */}
       {isOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden" onClick={onClose} />
+        <div
+          className="fixed left-0 right-0 top-16 bottom-0 z-40 lg:hidden"
+          onClick={onClose}
+        />
       )}
 
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 z-50 h-screen w-64 min-h-screen max-h-screen
+          fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-64
           bg-base-200/90 backdrop-blur-sm
           border-r border-base-300/60 shadow-2xl flex flex-col
           transform transition-transform duration-300 ease-in-out
-          lg:relative lg:translate-x-0 lg:z-auto lg:h-screen lg:min-h-screen lg:max-h-screen
+          lg:sticky lg:top-16 lg:self-start lg:translate-x-0 lg:z-auto lg:h-[calc(100vh-4rem)] lg:flex-shrink-0
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           ${className}
         `}

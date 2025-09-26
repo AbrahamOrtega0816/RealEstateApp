@@ -1,198 +1,169 @@
 import React from "react";
-import { Button } from "./Button";
 
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
   showPageInfo?: boolean;
-  maxVisiblePages?: number;
 }
 
 /**
- * Reusable pagination component
+ * Reusable pagination component with ellipsis support
  */
 export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
   showPageInfo = true,
-  maxVisiblePages = 5,
 }) => {
-  // Calculate which page numbers to show
+  // Ensure we have valid numbers and at least 1 page for display
+  const safeTotalPages =
+    Number.isFinite(totalPages) && totalPages > 0 ? totalPages : 1;
+  const safeCurrentPage =
+    Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
+
+  const displayTotalPages = Math.max(safeTotalPages, 1);
+  const displayCurrentPage = Math.max(
+    Math.min(safeCurrentPage, displayTotalPages),
+    1
+  );
+
+  // Function to generate page numbers with ellipsis
   const getPageNumbers = () => {
-    const pages: number[] = [];
-    
-    if (totalPages <= maxVisiblePages) {
-      // Show all pages if total is less than max visible
-      for (let i = 1; i <= totalPages; i++) {
+    const maxPagesToShow = 5; // Maximum number of page buttons to show
+    let pages: (number | "ellipsis")[] = [];
+
+    // Always show the first page
+    pages.push(1);
+
+    if (displayTotalPages <= maxPagesToShow) {
+      // If there are few pages, show all
+      for (let i = 2; i <= displayTotalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Complex pagination logic
-      if (currentPage <= 3) {
-        // Near the beginning
-        for (let i = 1; i <= maxVisiblePages; i++) {
-          pages.push(i);
-        }
-      } else if (currentPage >= totalPages - 2) {
-        // Near the end
-        for (let i = totalPages - maxVisiblePages + 1; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        // In the middle
-        const startPage = currentPage - Math.floor(maxVisiblePages / 2);
-        for (let i = 0; i < maxVisiblePages; i++) {
-          pages.push(startPage + i);
-        }
+      // If user is near the beginning
+      if (displayCurrentPage <= 3) {
+        pages.push(2, 3);
+        pages.push("ellipsis");
+        pages.push(displayTotalPages);
+      }
+      // If user is near the end
+      else if (displayCurrentPage >= displayTotalPages - 2) {
+        pages.push("ellipsis");
+        pages.push(
+          displayTotalPages - 2,
+          displayTotalPages - 1,
+          displayTotalPages
+        );
+      }
+      // If user is in the middle
+      else {
+        pages.push("ellipsis");
+        pages.push(
+          displayCurrentPage - 1,
+          displayCurrentPage,
+          displayCurrentPage + 1
+        );
+        pages.push("ellipsis");
+        pages.push(displayTotalPages);
       }
     }
-    
+
     return pages;
   };
-
-  if (totalPages <= 1) {
-    return null;
-  }
 
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
       {/* Mobile view */}
-      <div className="flex-1 flex justify-between sm:hidden">
-        <Button
-          variant="ghost"
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+      <div className="join sm:hidden">
+        <button
+          className={`join-item btn ${
+            displayCurrentPage === 1 ? "btn-disabled" : ""
+          }`}
+          onClick={() => onPageChange(displayCurrentPage - 1)}
+          disabled={displayCurrentPage === 1}
         >
-          Previous
-        </Button>
-        <Button
-          variant="ghost"
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          «
+        </button>
+        <button className="join-item btn">Page {displayCurrentPage}</button>
+        <button
+          className={`join-item btn ${
+            displayCurrentPage === displayTotalPages ? "btn-disabled" : ""
+          }`}
+          onClick={() => onPageChange(displayCurrentPage + 1)}
+          disabled={displayCurrentPage === displayTotalPages}
         >
-          Next
-        </Button>
+          »
+        </button>
       </div>
 
       {/* Desktop view */}
-      <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+      <div className="hidden sm:flex items-center justify-between w-full">
         {showPageInfo && (
-          <div>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              Showing page{" "}
-              <span className="font-medium">{currentPage}</span> of{" "}
-              <span className="font-medium">{totalPages}</span>
-            </p>
+          <div className="text-sm text-base-content/70">
+            Showing page{" "}
+            <span className="font-semibold text-base-content">
+              {displayCurrentPage}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-base-content">
+              {displayTotalPages}
+            </span>
           </div>
         )}
-        
-        <div>
-          <nav
-            className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-            aria-label="Pagination"
+
+        <div className="join">
+          {/* Previous button */}
+          <button
+            className={`join-item btn ${
+              displayCurrentPage === 1 ? "btn-disabled" : ""
+            }`}
+            disabled={displayCurrentPage === 1}
+            onClick={() => onPageChange(displayCurrentPage - 1)}
           >
-            {/* Previous button */}
-            <Button
-              variant="ghost"
-              onClick={() => onPageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span className="sr-only">Previous</span>
-              <svg
-                className="h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Button>
+            «
+          </button>
 
-            {/* First page + ellipsis */}
-            {pageNumbers[0] > 1 && (
-              <>
-                <Button
-                  variant="ghost"
-                  onClick={() => onPageChange(1)}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+          {/* Page numbers */}
+          {pageNumbers.map((page, index) => {
+            if (page === "ellipsis") {
+              return (
+                <button
+                  key={`ellipsis-${index}`}
+                  className="join-item btn btn-disabled"
+                  disabled
                 >
-                  1
-                </Button>
-                {pageNumbers[0] > 2 && (
-                  <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    ...
-                  </span>
-                )}
-              </>
-            )}
+                  ...
+                </button>
+              );
+            }
 
-            {/* Page numbers */}
-            {pageNumbers.map((pageNumber) => (
-              <Button
-                key={pageNumber}
-                variant={pageNumber === currentPage ? "primary" : "ghost"}
-                onClick={() => onPageChange(pageNumber)}
-                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                  pageNumber === currentPage
-                    ? "z-10 bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-600 dark:text-blue-300"
-                    : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            return (
+              <button
+                key={page}
+                className={`join-item btn ${
+                  page === displayCurrentPage ? "btn-primary" : ""
                 }`}
+                onClick={() => onPageChange(page as number)}
               >
-                {pageNumber}
-              </Button>
-            ))}
+                {page}
+              </button>
+            );
+          })}
 
-            {/* Last page + ellipsis */}
-            {pageNumbers[pageNumbers.length - 1] < totalPages && (
-              <>
-                {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-                  <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    ...
-                  </span>
-                )}
-                <Button
-                  variant="ghost"
-                  onClick={() => onPageChange(totalPages)}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                >
-                  {totalPages}
-                </Button>
-              </>
-            )}
-
-            {/* Next button */}
-            <Button
-              variant="ghost"
-              onClick={() => onPageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span className="sr-only">Next</span>
-              <svg
-                className="h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Button>
-          </nav>
+          {/* Next button */}
+          <button
+            className={`join-item btn ${
+              displayCurrentPage === displayTotalPages ? "btn-disabled" : ""
+            }`}
+            disabled={displayCurrentPage === displayTotalPages}
+            onClick={() => onPageChange(displayCurrentPage + 1)}
+          >
+            »
+          </button>
         </div>
       </div>
     </div>

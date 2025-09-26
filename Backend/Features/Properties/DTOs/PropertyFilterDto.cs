@@ -44,7 +44,7 @@ public class PropertyFilterDto
     public int PageSize { get; set; } = 10;
 
     /// <summary>
-    /// Field to sort by (name, address, price, createdAt)
+    /// Field to sort by (name, address, price, year, createdAt)
     /// </summary>
     public string SortBy { get; set; } = "createdAt";
 
@@ -52,4 +52,20 @@ public class PropertyFilterDto
     /// Sort direction (asc, desc)
     /// </summary>
     public string SortDirection { get; set; } = "desc";
+
+    /// <summary>
+    /// Filter by owner ID
+    /// </summary>
+    public string? IdOwner { get; set; }
+
+    /// <summary>
+    /// Filter by construction year
+    /// </summary>
+    [Range(1900, 3000, ErrorMessage = "Year must be between 1900 and 3000")]
+    public int? Year { get; set; }
+
+    /// <summary>
+    /// Filter by active status (default true)
+    /// </summary>
+    public bool IsActive { get; set; } = true;
 }

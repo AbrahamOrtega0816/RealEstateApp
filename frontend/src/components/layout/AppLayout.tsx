@@ -33,9 +33,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-base-200 theme-transition flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-base-200 theme-transition flex flex-col">
       {/* Navbar fijo en la parte superior */}
-      <div className="sticky top-0 z-30 backdrop-blur-md bg-base-100/80 border-b border-base-300/50 shadow-sm">
+      <div className="sticky top-0 z-30 backdrop-blur-md bg-base-100/80 border-b border-base-300/50 shadow-sm flex-shrink-0">
         <Navbar
           onToggleSidebar={toggleSidebar}
           showSidebarToggle={showSidebar}
@@ -44,7 +44,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
       </div>
 
       {/* Contenedor principal con sidebar y contenido */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[16rem_minmax(0,1fr)]">
         {/* Sidebar */}
         {showSidebar && (
           <Sidebar
@@ -57,7 +57,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
         {/* Contenido principal */}
         <main
           className={`
-            flex-1 overflow-auto transition-all duration-500 ease-out theme-transition
+            overflow-auto transition-all duration-500 ease-out theme-transition min-h-0
             ${contentClassName || ""}
           `}
         >

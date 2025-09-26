@@ -2,7 +2,6 @@ import React from "react";
 import { Icon } from "@iconify/react";
 import { OwnerHeaderTable } from "./OwnerHeaderTable";
 import { OwnerBodyTable } from "./OwnerBodyTable";
-import Button from "@/components/ui/Button";
 import { Pagination } from "@/components/ui/Pagination";
 import { OwnerDto } from "@/modules/owners/types/owner";
 

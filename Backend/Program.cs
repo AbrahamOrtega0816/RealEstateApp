@@ -91,6 +91,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IMongoDbStartupService, MongoDbStartupService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IUrlService, UrlService>();
 
 // Add controllers
 builder.Services.AddControllers();

@@ -17,7 +17,7 @@ const OwnerPage: React.FC = () => {
   const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const pageSize = 10;
+  const pageSize = 5;
 
   // Fetch owners data
   const { data, isLoading, refetch } = useGetOwners({
