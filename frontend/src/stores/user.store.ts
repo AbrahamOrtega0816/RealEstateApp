@@ -9,6 +9,7 @@ interface UserState {
   refreshToken: string | null;
   tokenExpiresAt: string | null;
   isAuthenticated: boolean;
+  isHydrated: boolean;
 
   // Acciones
   setAuth: (data: {
@@ -27,6 +28,7 @@ interface UserState {
 
   // Utilidades
   isTokenExpired: () => boolean;
+  setHydrated: (value: boolean) => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -38,6 +40,7 @@ export const useUserStore = create<UserState>()(
       refreshToken: null,
       tokenExpiresAt: null,
       isAuthenticated: false,
+      isHydrated: false,
 
       // Acción para establecer toda la información de autenticación
       setAuth: (data) =>
@@ -80,6 +83,9 @@ export const useUserStore = create<UserState>()(
         if (!tokenExpiresAt) return true;
         return new Date() >= new Date(tokenExpiresAt);
       },
+
+      // Marcar cuando la persistencia haya rehidratado el estado
+      setHydrated: (value: boolean) => set({ isHydrated: value }),
     }),
     {
       name: "user-store", // nombre único para el localStorage
@@ -92,13 +98,13 @@ export const useUserStore = create<UserState>()(
         tokenExpiresAt: state.tokenExpiresAt,
         isAuthenticated: state.isAuthenticated,
       }),
-      // Verificar autenticación al cargar desde localStorage
-      onRehydrateStorage: () => (state) => {
-        if (state && state.accessToken) {
-          // Verificar si el token está expirado al cargar
-          if (state.isTokenExpired()) {
-            state.clearAuth();
-          }
+      // Controlar el ciclo de hidratación para evitar condiciones de carrera
+      onRehydrateStorage: () => (state, error) => {
+        // Se llama después de intentar hidratar (exitoso o con error)
+        try {
+          state?.setHydrated(true);
+        } catch (_) {
+          // no-op
         }
       },
     }
@@ -112,3 +118,4 @@ export const useIsAuthenticated = () =>
 export const useAccessToken = () => useUserStore((state) => state.accessToken);
 export const useRefreshToken = () =>
   useUserStore((state) => state.refreshToken);
+export const useIsHydrated = () => useUserStore((state) => state.isHydrated);

@@ -6,18 +6,21 @@ import { toast } from "react-hot-toast";
 import LoginLayout from "../layout";
 import { LoginCard, LoginForm } from "../components";
 import { useAuth } from "../hooks/useAuth";
+import { useIsHydrated } from "@/stores/user.store";
 import { LoginDto } from "../types/auth";
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
   const { login, isLoginLoading, isAuthenticated } = useAuth();
+  const isHydrated = useIsHydrated();
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated (solo después de hidratar)
   React.useEffect(() => {
+    if (!isHydrated) return;
     if (isAuthenticated) {
-      router.push("/"); // or your main application route
+      router.replace("/");
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isHydrated, router]);
 
   const handleLogin = async (data: LoginDto) => {
     try {

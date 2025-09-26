@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   useLoginMutation,
@@ -8,7 +7,6 @@ import {
 } from "../services/authService";
 import { LoginDto, RegisterDto } from "@/modules/login/types/auth";
 import {
-  useUserStore,
   useUser,
   useIsAuthenticated,
   useAccessToken,
@@ -23,42 +21,11 @@ export const useAuth = () => {
   const isAuthenticated = useIsAuthenticated();
   const accessToken = useAccessToken();
   const refreshToken = useRefreshToken();
-  const isTokenExpired = useUserStore((state) => state.isTokenExpired);
-  const clearAuth = useUserStore((state) => state.clearAuth);
 
   // Mutations
   const loginMutation = useLoginMutation();
   const registerMutation = useRegisterMutation();
   const refreshTokenMutation = useRefreshTokenMutation();
-
-  // Verificar autenticación al cargar
-  useEffect(() => {
-    const checkAuth = () => {
-      if (accessToken && user && !isTokenExpired()) {
-        // Usuario autenticado y token válido
-        return;
-      } else if (accessToken && isTokenExpired()) {
-        // Token expirado, intentar renovar
-        if (refreshToken) {
-          refreshTokenMutation.mutate({ refreshToken });
-        } else {
-          handleLogout();
-        }
-      } else if (!accessToken || !user) {
-        // No hay token o usuario, limpiar estado
-        clearAuth();
-      }
-    };
-
-    checkAuth();
-  }, [
-    accessToken,
-    user,
-    refreshToken,
-    isTokenExpired,
-    refreshTokenMutation,
-    clearAuth,
-  ]);
 
   // Función de login
   const handleLogin = async (loginData: LoginDto) => {

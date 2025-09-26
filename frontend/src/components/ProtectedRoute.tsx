@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/modules/login/hooks/useAuth";
+import { useIsHydrated } from "@/stores/user.store";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -26,16 +27,19 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const router = useRouter();
   const { isAuthenticated, user, accessToken } = useAuth();
+  const isHydrated = useIsHydrated();
 
   useEffect(() => {
+    // Esperar a que el store esté hidratado antes de decidir
+    if (!isHydrated) return;
     // Si no está autenticado, redirigir al login
     if (!isAuthenticated || !user || !accessToken) {
-      router.push("/login");
+      router.replace("/login");
     }
-  }, [isAuthenticated, user, accessToken, router]);
+  }, [isHydrated, isAuthenticated, user, accessToken, router]);
 
   // Mostrar loading mientras se verifica la autenticación
-  if (!isAuthenticated || !user || !accessToken) {
+  if (!isHydrated || !isAuthenticated || !user || !accessToken) {
     return <>{fallback}</>;
   }
 

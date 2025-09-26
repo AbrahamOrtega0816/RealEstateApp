@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
@@ -14,7 +14,7 @@ interface AppLayoutProps {
 
 /**
  * Layout principal de la aplicación que integra Navbar y Sidebar
- * Proporciona una estructura consistente para todas las páginas
+ * Proporciona una estructura consistente para todas las páginas con soporte completo de temas
  */
 const AppLayout: React.FC<AppLayoutProps> = ({
   children,
@@ -24,7 +24,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({
   contentClassName,
 }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -34,18 +33,18 @@ const AppLayout: React.FC<AppLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-base-200">
+    <div className="min-h-screen bg-base-200 theme-transition flex flex-col overflow-hidden">
       {/* Navbar fijo en la parte superior */}
-      <div className="sticky top-0 z-30">
+      <div className="sticky top-0 z-30 backdrop-blur-md bg-base-100/80 border-b border-base-300/50 shadow-sm">
         <Navbar
           onToggleSidebar={toggleSidebar}
           showSidebarToggle={showSidebar}
-          className={navbarClassName}
+          className={`bg-transparent ${navbarClassName || ""}`}
         />
       </div>
 
       {/* Contenedor principal con sidebar y contenido */}
-      <div className="flex">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         {showSidebar && (
           <Sidebar
@@ -58,12 +57,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({
         {/* Contenido principal */}
         <main
           className={`
-            flex-1 transition-all duration-300 ease-in-out
-            ${showSidebar ? "lg:ml-0" : ""}
+            flex-1 overflow-auto transition-all duration-500 ease-out theme-transition
             ${contentClassName || ""}
           `}
         >
-          <div className="p-6">{children}</div>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-7xl">
+            {children}
+          </div>
         </main>
       </div>
     </div>

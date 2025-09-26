@@ -30,22 +30,23 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <div
-      className={`navbar bg-base-100 shadow-sm border-b border-base-300 px-4 ${
-        className || ""
-      }`}
+    <nav
+      className={`navbar h-16 px-4 lg:px-6 theme-transition rounded-none
+        bg-gradient-to-r from-base-100/90 via-base-100/70 to-base-100/90
+        backdrop-blur supports-[backdrop-filter]:bg-base-100/70 border-b border-base-300/60
+        ${className || ""}`}
     >
       {/* Lado izquierdo - Toggle sidebar y logo */}
       <div className="navbar-start">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {showSidebarToggle && (
             <button
               onClick={onToggleSidebar}
-              className="btn btn-ghost btn-sm lg:hidden"
+              className="btn btn-ghost btn-sm lg:hidden hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl"
               aria-label="Toggle sidebar"
             >
               <svg
-                className="w-5 h-5"
+                className="w-5 h-5 transition-transform hover:scale-110"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -59,33 +60,45 @@ const Navbar: React.FC<NavbarProps> = ({
               </svg>
             </button>
           )}
-          <Link href="/" className="btn btn-ghost text-xl font-bold">
-            🏠 RealEstate
+          <Link
+            href="/"
+            className="btn btn-ghost text-xl font-bold hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl group"
+          >
+            <span className="text-2xl group-hover:scale-110 transition-transform duration-200">
+              🏠
+            </span>
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              RealEstate
+            </span>
           </Link>
         </div>
       </div>
 
       {/* Centro - Breadcrumbs o título de página (opcional) */}
       <div className="navbar-center hidden lg:flex">
-        {/* Aquí se pueden agregar breadcrumbs si se necesitan */}
+        <div className="flex items-center gap-2 text-sm text-base-content/60">
+          {/* Aquí se pueden agregar breadcrumbs dinámicos basados en la ruta */}
+        </div>
       </div>
 
       {/* Lado derecho - Usuario y tema */}
       <div className="navbar-end">
-        <div className="flex items-center gap-2">
-          {/* Selector de tema */}
-          <ThemeSelector />
+        <div className="flex items-center gap-3">
+          {/* Selector de tema mejorado */}
+          <div className="hidden sm:block">
+            <ThemeSelector />
+          </div>
 
-          {/* Dropdown del usuario */}
+          {/* Dropdown del usuario mejorado */}
           {user && (
             <div className="dropdown dropdown-end">
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-ghost btn-circle avatar placeholder"
+                className="btn btn-ghost btn-circle avatar placeholder hover:bg-primary/10 transition-all duration-200 group"
               >
-                <div className="bg-neutral text-neutral-content rounded-full w-10">
-                  <span className="text-sm font-medium">
+                <div className="bg-gradient-to-br from-primary to-secondary text-primary-content rounded-full w-10 h-10 relative group-hover:scale-105 transition-transform duration-200 shadow-lg select-none">
+                  <span className="absolute inset-0 inline-flex items-center justify-center text-sm font-bold">
                     {user.firstName?.[0]?.toUpperCase() || "U"}
                     {user.lastName?.[0]?.toUpperCase() || ""}
                   </span>
@@ -93,67 +106,35 @@ const Navbar: React.FC<NavbarProps> = ({
               </div>
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 border border-base-300"
+                className="menu menu-sm dropdown-content mt-3 z-50 p-3 shadow-2xl bg-base-100/95 backdrop-blur-md rounded-2xl w-64 border border-base-300/50 theme-transition"
               >
-                <li className="menu-title">
-                  <span>
-                    {user.firstName} {user.lastName}
-                  </span>
+                <li className="menu-title px-3 py-2">
+                  <div className="flex items-center gap-3">
+                    <div className="avatar placeholder">
+                      <div className="bg-primary/20 text-primary rounded-full w-8 h-8 relative select-none">
+                        <span className="absolute inset-0 inline-flex items-center justify-center text-xs font-bold">
+                          {user.firstName?.[0]?.toUpperCase() || "U"}
+                          {user.lastName?.[0]?.toUpperCase() || ""}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span className="font-semibold text-base-content text-left">
+                        {user.firstName} {user.lastName}
+                      </span>
+                      <span className="text-xs text-base-content/60 font-normal">
+                        {user.email}
+                      </span>
+                    </div>
+                  </div>
                 </li>
-                <li>
-                  <a className="text-base-content/70 text-xs">{user.email}</a>
-                </li>
-                <div className="divider my-1"></div>
-                <li>
-                  <Link href="/profile" className="flex items-center gap-2">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                    Perfil
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/settings" className="flex items-center gap-2">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    Configuración
-                  </Link>
-                </li>
-                <div className="divider my-1"></div>
                 <li>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2 text-error"
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-error/10 hover:text-error transition-all duration-200 text-error/80"
                   >
                     <svg
-                      className="w-4 h-4"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -165,7 +146,7 @@ const Navbar: React.FC<NavbarProps> = ({
                         d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                       />
                     </svg>
-                    Cerrar Sesión
+                    <span className="font-medium">Sign out</span>
                   </button>
                 </li>
               </ul>
@@ -173,7 +154,7 @@ const Navbar: React.FC<NavbarProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 

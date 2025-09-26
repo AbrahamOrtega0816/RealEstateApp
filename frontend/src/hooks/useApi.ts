@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUserStore } from "@/stores/user.store";
 
 // Configuración base de la API
 const API_BASE_URL =
@@ -7,13 +8,26 @@ const API_BASE_URL =
 // Función helper para realizar peticiones HTTP
 const fetchApi = async (endpoint: string, options?: RequestInit) => {
   const url = `${API_BASE_URL}${endpoint}`;
+  
+  // Obtener el token del store
+  const accessToken = useUserStore.getState().accessToken;
+  
+  // Construir los headers incluyendo el token si existe
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  
+  // Agregar el token de autorización si existe
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`;
+  }
 
   const response = await fetch(url, {
+    ...options,
     headers: {
-      "Content-Type": "application/json",
+      ...headers,
       ...options?.headers,
     },
-    ...options,
   });
 
   if (!response.ok) {

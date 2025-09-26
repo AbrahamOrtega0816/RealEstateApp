@@ -1,3 +1,4 @@
+import { ThemeSelector } from "@/components";
 import React from "react";
 interface LoginLayoutProps {
   children: React.ReactNode;
@@ -31,6 +32,11 @@ const LoginLayout: React.FC<LoginLayoutProps> = ({ children }) => {
             backgroundSize: "50px 50px",
           }}
         ></div>
+      </div>
+
+      {/* Theme Selector */}
+      <div className="absolute top-4 right-4 z-30">
+        <ThemeSelector />
       </div>
 
       {/* Main Content */}
