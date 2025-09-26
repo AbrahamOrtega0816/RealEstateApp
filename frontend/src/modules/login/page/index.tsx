@@ -25,6 +25,7 @@ const LoginPage: React.FC = () => {
         loading: "Logging in...",
         success: "Login successful",
       });
+      router.push("/properties");
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Login failed";

@@ -1,6 +1,4 @@
 import React from "react";
-import { ThemeSelector } from "@/components";
-
 interface LoginLayoutProps {
   children: React.ReactNode;
 }

@@ -3,29 +3,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-
-// Validation schema with Zod
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters long"),
-  rememberMe: z.boolean().optional(),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
-
-interface LoginFormProps {
-  onSubmit: (data: LoginFormData) => void;
-  isLoading?: boolean;
-}
+import { LoginFormData, LoginFormProps, loginSchema } from "../const/form";
 
 const LoginForm: React.FC<LoginFormProps> = ({
   onSubmit,

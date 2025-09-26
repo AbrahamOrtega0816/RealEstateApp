@@ -16,8 +16,11 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   fallback = (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+    <div className="min-h-screen flex items-center justify-center bg-base-200">
+      <div className="text-center">
+        <div className="loading loading-spinner loading-lg text-primary"></div>
+        <p className="mt-4 text-base-content/70">Loading...</p>
+      </div>
     </div>
   ),
 }) => {

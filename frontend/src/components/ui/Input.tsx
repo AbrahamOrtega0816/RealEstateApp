@@ -8,7 +8,12 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
-    { label, error, className = "input input-bordered w-full", ...props },
+    {
+      label,
+      error,
+      className = "input input-bordered w-full rounded-lg",
+      ...props
+    },
     ref
   ) => {
     return (
