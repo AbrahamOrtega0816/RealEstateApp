@@ -134,6 +134,11 @@
             Users collection name
             </summary>
         </member>
+        <member name="T:RealEstateAPI.Configuration.SwaggerFileOperationFilter">
+            <summary>
+            Filter to handle IFormFile parameters in Swagger documentation
+            </summary>
+        </member>
         <member name="T:RealEstateAPI.Features.Authentication.Controllers.AuthController">
             <summary>
             Controller for user authentication and authorization
