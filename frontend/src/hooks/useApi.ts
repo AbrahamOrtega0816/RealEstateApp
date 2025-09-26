@@ -6,17 +6,17 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5260/api";
 
 // Función helper para realizar peticiones HTTP
-const fetchApi = async (endpoint: string, options?: RequestInit) => {
+export const fetchApi = async (endpoint: string, options?: RequestInit) => {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   // Obtener el token del store
   const accessToken = useUserStore.getState().accessToken;
-  
+
   // Construir los headers incluyendo el token si existe
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
-  
+
   // Agregar el token de autorización si existe
   if (accessToken) {
     headers["Authorization"] = `Bearer ${accessToken}`;
