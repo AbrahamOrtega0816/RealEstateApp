@@ -224,8 +224,14 @@ builder.Services.AddCors(options =>
     {
         var allowedOriginsEnv = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS");
         string[] allowedOrigins = string.IsNullOrWhiteSpace(allowedOriginsEnv)
-            ? new[] { "http://localhost:3000", "http://localhost:3001" }
+            ? new[] { 
+                "http://localhost:3000", 
+                "http://localhost:3001",
+                "https://real-estate-app-kappa-six.vercel.app" // Add your Vercel domain as fallback
+              }
             : allowedOriginsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        Console.WriteLine($"🌐 CORS: Allowing origins: {string.Join(", ", allowedOrigins)}");
 
         policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
