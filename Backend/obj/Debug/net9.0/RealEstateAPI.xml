@@ -658,11 +658,12 @@
             <response code="404">If the owner is not found</response>
             <response code="500">If there was an internal server error</response>
         </member>
-        <member name="M:RealEstateAPI.Features.Owners.Controllers.OwnersController.CreateOwner(RealEstateAPI.Features.Owners.DTOs.CreateOwnerDto)">
+        <member name="M:RealEstateAPI.Features.Owners.Controllers.OwnersController.CreateOwner(RealEstateAPI.Features.Owners.DTOs.CreateOwnerDto,Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             Creates a new owner
             </summary>
             <param name="createOwnerDto">Owner creation data</param>
+            <param name="photo">Optional owner photo file</param>
             <returns>Created owner</returns>
             <response code="201">Returns the newly created owner</response>
             <response code="400">If the owner data is invalid</response>
@@ -703,11 +704,6 @@
         <member name="P:RealEstateAPI.Features.Owners.DTOs.CreateOwnerDto.Address">
             <summary>
             Owner address
-            </summary>
-        </member>
-        <member name="P:RealEstateAPI.Features.Owners.DTOs.CreateOwnerDto.Photo">
-            <summary>
-            Owner photo URL
             </summary>
         </member>
         <member name="P:RealEstateAPI.Features.Owners.DTOs.CreateOwnerDto.Birthday">
@@ -825,11 +821,12 @@
             <param name="id">Owner ID</param>
             <returns>Owner if found, null otherwise</returns>
         </member>
-        <member name="M:RealEstateAPI.Features.Owners.Services.IOwnerService.CreateOwnerAsync(RealEstateAPI.Features.Owners.DTOs.CreateOwnerDto)">
+        <member name="M:RealEstateAPI.Features.Owners.Services.IOwnerService.CreateOwnerAsync(RealEstateAPI.Features.Owners.DTOs.CreateOwnerDto,Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             Creates a new owner
             </summary>
             <param name="createOwnerDto">Owner creation data</param>
+            <param name="photo">Optional owner photo file</param>
             <returns>Created owner</returns>
         </member>
         <member name="M:RealEstateAPI.Features.Owners.Services.IOwnerService.UpdateOwnerAsync(System.String,RealEstateAPI.Features.Owners.DTOs.CreateOwnerDto)">
@@ -860,6 +857,11 @@
         <member name="M:RealEstateAPI.Features.Owners.Services.OwnerService.MapToDto(RealEstateAPI.Features.Owners.Models.Owner)">
             <summary>
             Maps an Owner entity to OwnerDto
+            </summary>
+        </member>
+        <member name="M:RealEstateAPI.Features.Owners.Services.OwnerService.GetFullImageUrl(System.String)">
+            <summary>
+            Converts a relative image path to a full URL
             </summary>
         </member>
         <member name="T:RealEstateAPI.Features.Properties.Controllers.PropertiesController">

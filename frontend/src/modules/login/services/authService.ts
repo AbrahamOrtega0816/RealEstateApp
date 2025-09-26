@@ -1,4 +1,5 @@
-import { useApiMutation } from "@/hooks/useApi";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "@/lib/axios";
 import {
   LoginDto,
   AuthResponseDto,
@@ -11,7 +12,9 @@ import { useUserStore } from "@/stores/user.store";
 export const useLoginMutation = () => {
   const setAuth = useUserStore((state) => state.setAuth);
 
-  return useApiMutation<AuthResponseDto, LoginDto>("/auth/login", "POST", {
+  return useMutation<AuthResponseDto, Error, LoginDto>({
+    mutationFn: async (loginData: LoginDto) =>
+      await api.post("/auth/login", loginData),
     onSuccess: (data) => {
       // Guardar la información de autenticación en el store
       setAuth({
@@ -31,24 +34,22 @@ export const useLoginMutation = () => {
 export const useRegisterMutation = () => {
   const setAuth = useUserStore((state) => state.setAuth);
 
-  return useApiMutation<AuthResponseDto, RegisterDto>(
-    "/auth/register",
-    "POST",
-    {
-      onSuccess: (data) => {
-        // Guardar la información de autenticación en el store
-        setAuth({
-          user: data.user,
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-          tokenExpiresAt: data.expiresAt,
-        });
-      },
-      onError: (error) => {
-        console.error("Error en registro:", error.message);
-      },
-    }
-  );
+  return useMutation<AuthResponseDto, Error, RegisterDto>({
+    mutationFn: async (registerData: RegisterDto) =>
+      await api.post("/auth/register", registerData),
+    onSuccess: (data) => {
+      // Guardar la información de autenticación en el store
+      setAuth({
+        user: data.user,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        tokenExpiresAt: data.expiresAt,
+      });
+    },
+    onError: (error) => {
+      console.error("Error en registro:", error.message);
+    },
+  });
 };
 
 // Hook para la mutation de refresh token
@@ -56,26 +57,24 @@ export const useRefreshTokenMutation = () => {
   const setAuth = useUserStore((state) => state.setAuth);
   const clearAuth = useUserStore((state) => state.clearAuth);
 
-  return useApiMutation<AuthResponseDto, RefreshTokenDto>(
-    "/auth/refresh",
-    "POST",
-    {
-      onSuccess: (data) => {
-        // Actualizar la información de autenticación en el store
-        setAuth({
-          user: data.user,
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-          tokenExpiresAt: data.expiresAt,
-        });
-      },
-      onError: (error) => {
-        console.error("Error al renovar token:", error.message);
-        // Si falla el refresh, limpiar el store
-        clearAuth();
-      },
-    }
-  );
+  return useMutation<AuthResponseDto, Error, RefreshTokenDto>({
+    mutationFn: async (refreshData: RefreshTokenDto) =>
+      await api.post("/auth/refresh", refreshData),
+    onSuccess: (data) => {
+      // Actualizar la información de autenticación en el store
+      setAuth({
+        user: data.user,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        tokenExpiresAt: data.expiresAt,
+      });
+    },
+    onError: (error) => {
+      console.error("Error al renovar token:", error.message);
+      // Si falla el refresh, limpiar el store
+      clearAuth();
+    },
+  });
 };
 
 // Función para hacer logout

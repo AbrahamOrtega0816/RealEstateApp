@@ -6,7 +6,7 @@ import {
   useGetOwners,
   useDeleteOwner,
 } from "@/modules/owners/services/ownerService";
-import { OwnerTable } from "@/modules/owners/components";
+import { OwnerTable, CreateOwnerModal } from "@/modules/owners/components";
 import { toast } from "react-hot-toast";
 
 /**
@@ -16,6 +16,7 @@ import { toast } from "react-hot-toast";
 const OwnerPage: React.FC = () => {
   const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const pageSize = 10;
 
   // Fetch owners data
@@ -42,8 +43,11 @@ const OwnerPage: React.FC = () => {
   };
 
   const handleAddOwner = () => {
-    // TODO: Navigate to add owner page or open modal
-    toast.success("Add owner functionality coming soon");
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateSuccess = () => {
+    refetch();
   };
 
   return (
@@ -56,6 +60,12 @@ const OwnerPage: React.FC = () => {
         onPageChange={handlePageChange}
         onDelete={handleDeleteOwner}
         onAdd={handleAddOwner}
+      />
+
+      <CreateOwnerModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={handleCreateSuccess}
       />
     </div>
   );

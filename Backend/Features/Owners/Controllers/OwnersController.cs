@@ -99,15 +99,17 @@ public class OwnersController : ControllerBase
     /// Creates a new owner
     /// </summary>
     /// <param name="createOwnerDto">Owner creation data</param>
+    /// <param name="photo">Optional owner photo file</param>
     /// <returns>Created owner</returns>
     /// <response code="201">Returns the newly created owner</response>
     /// <response code="400">If the owner data is invalid</response>
     /// <response code="500">If there was an internal server error</response>
     [HttpPost]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<OwnerDto>> CreateOwner([FromBody] CreateOwnerDto createOwnerDto)
+    public async Task<ActionResult<OwnerDto>> CreateOwner([FromForm] CreateOwnerDto createOwnerDto, [FromForm] IFormFile? photo = null)
     {
         try
         {
@@ -116,7 +118,7 @@ public class OwnersController : ControllerBase
                 return BadRequest(ModelState);
             }
 
-            var owner = await _ownerService.CreateOwnerAsync(createOwnerDto);
+            var owner = await _ownerService.CreateOwnerAsync(createOwnerDto, photo);
             
             return CreatedAtAction(
                 nameof(GetOwner), 

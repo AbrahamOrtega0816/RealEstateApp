@@ -27,8 +27,9 @@ public interface IOwnerService
     /// Creates a new owner
     /// </summary>
     /// <param name="createOwnerDto">Owner creation data</param>
+    /// <param name="photo">Optional owner photo file</param>
     /// <returns>Created owner</returns>
-    Task<OwnerDto> CreateOwnerAsync(CreateOwnerDto createOwnerDto);
+    Task<OwnerDto> CreateOwnerAsync(CreateOwnerDto createOwnerDto, IFormFile? photo = null);
 
     /// <summary>
     /// Updates an existing owner

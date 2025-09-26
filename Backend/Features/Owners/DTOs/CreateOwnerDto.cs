@@ -21,11 +21,6 @@ public class CreateOwnerDto
     [StringLength(500, ErrorMessage = "Address cannot exceed 500 characters")]
     public string Address { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Owner photo URL
-    /// </summary>
-    [Url(ErrorMessage = "Photo must be a valid URL")]
-    public string Photo { get; set; } = string.Empty;
 
     /// <summary>
     /// Owner birthday

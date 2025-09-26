@@ -83,6 +83,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 // Registrar servicios
+builder.Services.AddHttpContextAccessor(); // Required for generating full URLs
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddScoped<IOwnerService, OwnerService>();
 builder.Services.AddScoped<IPropertyTraceService, PropertyTraceService>();
@@ -230,6 +231,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Servir archivos estáticos (imágenes)
+app.UseStaticFiles();
 
 // Usar CORS
 app.UseCors("AllowFrontend");

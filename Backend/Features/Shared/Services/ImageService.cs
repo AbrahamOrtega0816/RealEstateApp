@@ -32,8 +32,8 @@ public class ImageService : IImageService
         try
         {
             // Create uploads directory if it doesn't exist
-            var uploadsPath = Path.Combine(_environment.WebRootPath ?? Directory.GetCurrentDirectory(), 
-                                         "wwwroot", UploadsDirectory, subFolder);
+            var webRootPath = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var uploadsPath = Path.Combine(webRootPath, UploadsDirectory, subFolder);
             Directory.CreateDirectory(uploadsPath);
 
             foreach (var file in imageFiles)

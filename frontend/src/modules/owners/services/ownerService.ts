@@ -1,10 +1,10 @@
-import { useApiQuery, useApiMutation, fetchApi } from "@/hooks/useApi";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { api } from "@/lib/axios";
 import {
   OwnerDto,
   CreateOwnerDto,
   PagedOwnerResult,
 } from "@/modules/owners/types/owner";
-import { useQuery } from "@tanstack/react-query";
 
 /**
  * Hook para obtener la lista de propietarios con paginación
@@ -13,12 +13,15 @@ export const useGetOwners = (params: {
   pageNumber: number;
   pageSize: number;
 }) => {
-  return useQuery({
+  return useQuery<PagedOwnerResult>({
     queryKey: ["owners", params],
-    queryFn: () =>
-      fetchApi(
-        `/owners?pageNumber=${params.pageNumber}&pageSize=${params.pageSize}`
-      ),
+    queryFn: async () =>
+      await api.get("/owners", {
+        params: {
+          pageNumber: params.pageNumber,
+          pageSize: params.pageSize,
+        },
+      }),
   });
 };
 
@@ -26,7 +29,9 @@ export const useGetOwners = (params: {
  * Hook para obtener un propietario por ID
  */
 export const useGetOwnerById = (id: string) => {
-  return useApiQuery<OwnerDto>(["owner", id], `/owners/${id}`, {
+  return useQuery<OwnerDto>({
+    queryKey: ["owner", id],
+    queryFn: async () => await api.get(`/owners/${id}`),
     enabled: !!id, // Solo ejecutar si hay un ID
     staleTime: 30000,
     gcTime: 300000,
@@ -37,13 +42,14 @@ export const useGetOwnerById = (id: string) => {
  * Hook para crear un nuevo propietario
  */
 export const useCreateOwner = () => {
-  return useApiMutation<OwnerDto, CreateOwnerDto>("/owners", "POST", {
-    onSuccess: (data) => {
-      console.log("Propietario creado exitosamente:", data);
-    },
-    onError: (error) => {
-      console.error("Error al crear propietario:", error.message);
-    },
+  return useMutation<OwnerDto, Error, FormData>({
+    mutationFn: async (formData: FormData) =>
+      await api.post("/owners", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }),
+    mutationKey: ["useCreateOwner"],
   });
 };
 
@@ -51,7 +57,9 @@ export const useCreateOwner = () => {
  * Hook para actualizar un propietario
  */
 export const useUpdateOwner = (id: string) => {
-  return useApiMutation<OwnerDto, CreateOwnerDto>(`/owners/${id}`, "PUT", {
+  return useMutation<OwnerDto, Error, CreateOwnerDto>({
+    mutationFn: async (ownerData: CreateOwnerDto) =>
+      await api.put(`/owners/${id}`, ownerData),
     onSuccess: (data) => {
       console.log("Propietario actualizado exitosamente:", data);
     },
@@ -64,13 +72,8 @@ export const useUpdateOwner = (id: string) => {
 /**
  * Hook para eliminar un propietario
  */
-export const useDeleteOwner = (id: string) => {
-  return useApiMutation<void, string>(`/owners/${id}`, "DELETE", {
-    onSuccess: () => {
-      console.log("Propietario eliminado exitosamente");
-    },
-    onError: (error) => {
-      console.error("Error al eliminar propietario:", error.message);
-    },
+export const useDeleteOwner = () => {
+  return useMutation<void, Error, string>({
+    mutationFn: async (id: string) => await api.delete(`/owners/${id}`),
   });
 };
