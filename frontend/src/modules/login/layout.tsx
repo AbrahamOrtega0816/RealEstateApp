@@ -36,17 +36,17 @@ const LoginLayout: React.FC<LoginLayoutProps> = ({ children }) => {
       </div>
 
       {/* Main Content */}
-      <main className="relative z-20 flex items-center justify-center px-4 py-12 min-h-[calc(100vh-200px)]">
+      <main className="relative z-20 flex items-center justify-center px-4 py-16 min-h-screen">
         <div className="w-full max-w-md">
-          {/* Glass morphism container */}
-          <div className="backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-base-300/20 bg-base-100/85">
+          {/* Glass morphism container with proper spacing to avoid theme selector overlap */}
+          <div className="backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-base-300/20 bg-base-100/85 mt-20 sm:mt-12 mb-8">
             {children}
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="relative z-20 text-center py-8">
+      <footer className="relative z-20 text-center pb-8 pt-4">
         <p className="text-sm font-medium text-base-content/70">
           &copy; 2025 RealEstate App. All rights reserved.
         </p>
