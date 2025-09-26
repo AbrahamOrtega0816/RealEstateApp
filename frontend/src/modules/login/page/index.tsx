@@ -10,7 +10,7 @@ import { LoginDto } from "../types/auth";
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
-  const { login, isLoginLoading, loginError, isAuthenticated } = useAuth();
+  const { login, isLoginLoading, isAuthenticated } = useAuth();
 
   // Redirect if already authenticated
   React.useEffect(() => {
