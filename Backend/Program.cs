@@ -216,13 +216,16 @@ if (app.Environment.IsDevelopment())
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+var enableSwagger = app.Environment.IsDevelopment() ||
+    string.Equals(Environment.GetEnvironmentVariable("ENABLE_SWAGGER"), "true", StringComparison.OrdinalIgnoreCase);
+if (enableSwagger)
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Real Estate API V1");
-        c.RoutePrefix = string.Empty; // Swagger at root
+        // In Development serve Swagger at root; in Production serve at /swagger
+        c.RoutePrefix = app.Environment.IsDevelopment() ? string.Empty : "swagger";
         c.DocumentTitle = "Real Estate API - Documentación";
         c.DefaultModelsExpandDepth(2);
         c.DefaultModelExpandDepth(2);
