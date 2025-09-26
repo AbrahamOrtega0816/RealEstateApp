@@ -27,11 +27,9 @@ RUN mkdir -p /app/wwwroot/uploads/properties
 
 # Exponer puertos
 EXPOSE 8080
-EXPOSE 8081
 
 # Configurar variables de entorno
-ENV ASPNETCORE_URLS=http://+:8080;https://+:8081
-ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \

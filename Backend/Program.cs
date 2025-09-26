@@ -12,6 +12,16 @@ using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Bind to platform-provided PORT when present (e.g., Railway/Render)
+var portFromEnv = Environment.GetEnvironmentVariable("PORT");
+if (int.TryParse(portFromEnv, out var portValue))
+{
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(portValue);
+    });
+}
+
 // Load .env file if it exists
 try
 {
@@ -164,7 +174,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:3001")
+        var allowedOriginsEnv = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS");
+        string[] allowedOrigins = string.IsNullOrWhiteSpace(allowedOriginsEnv)
+            ? new[] { "http://localhost:3000", "http://localhost:3001" }
+            : allowedOriginsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -231,7 +246,16 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseHttpsRedirection();
+// HTTPS redirection is disabled by default in containerized environments.
+// Enable only when a valid certificate is configured and proxied TLS is handled.
+var enableHttpsRedirect = string.Equals(
+    Environment.GetEnvironmentVariable("ENABLE_HTTPS_REDIRECT"),
+    "true",
+    StringComparison.OrdinalIgnoreCase);
+if (enableHttpsRedirect)
+{
+    app.UseHttpsRedirection();
+}
 
 // Servir archivos estáticos (imágenes)
 app.UseStaticFiles();
