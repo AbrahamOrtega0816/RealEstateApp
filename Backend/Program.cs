@@ -8,6 +8,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
 using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -316,6 +317,17 @@ if (enableHttpsRedirect)
 
 // Servir archivos estáticos (imágenes)
 app.UseStaticFiles();
+
+// Mapeo explícito para /uploads -> wwwroot/uploads (robusto para producción)
+var webRootPath = app.Environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+var uploadsPhysicalPath = Path.Combine(webRootPath, "uploads");
+Directory.CreateDirectory(uploadsPhysicalPath);
+Console.WriteLine($"🗂️ Static files - WebRoot: {webRootPath} | Uploads: {uploadsPhysicalPath}");
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsPhysicalPath),
+    RequestPath = "/uploads"
+});
 
 // Usar CORS
 app.UseCors("AllowFrontend");
